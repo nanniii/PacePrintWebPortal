@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="UTF-8">
+        <title>PacePrint</title>
+    </head>
+<body>
+   
+    <h1 id='name'></h1>
+    <h1> Thanks for printing to the <em>Pace Print System!</em></h1>
+
+    <p></p>
+    
+    <button type="button" onclick="redirectBack()">Print Another Document?</button>
+
+
+   <script> 
+    
+       var firstname = sessionStorage.getItem("firstname");
+       var lastname = sessionStorage.getItem("lastname");
+       if(firstname != null)
+       document.getElementById('name').innerHTML = "Hey, "+firstname +" " + lastname;
+    
+       sessionStorage.removeItem("firstname");
+       sessionStorage.removeItem("lastname");
+    
+       
+       function redirectBack(){
+           window.location.href = "inputForm.html";
+       }
+    </script>
+
+
+    
+</body>
+</html>
+

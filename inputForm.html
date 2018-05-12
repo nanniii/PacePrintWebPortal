@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="loading-bar.css"/>
+        <script type="text/javascript" src="loading-bar.js"></script>
+    <meta charset="UTF-8">
+        <title>PacePrint</title>
+    </head>
+<body>
+    <div class="contents">
+    <h1> Print a Document to the <em>Pace Print System</em></h1>
+<div style="align-content: flex-start">
+        <img class='img' src="printerIcon.png" alt="PacePrint Icon">
+        </div>
+    <form method="post">
+    <p>
+        <label for="firstName">First Name:</label>
+        <input type="text" name="firstName" id="firstname">
+    </p>
+    <p>
+        <label for="lastName">Last Name</label>
+        <input type="text" name="lastName" id="lastname">
+    </p>
+    <p>
+        <label for="paceEmail">Pace Email:</label>
+        <input type="text" id="paceemail">
+    </p>
+    <p>
+<input type="file" id="fileToUpload" >
+</p>
+</form>
+
+    
+<p id="helpfulSentence">After selecting your file, you will get a confirmation to upload your file to the PacePrint system.</p>
+
+        <div
+  class="ldBar label-center"
+  id="uploadBar"
+  style="width:25%;height:25%;margin:auto"
+  data-value="0"
+  data-preset="rainbow"
+></div>   
+</div>
+<script src="https://www.gstatic.com/firebasejs/5.0.2/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    storageBucket: "paceprint-82fcc.appspot.com",
+  };
+  firebase.initializeApp(config);
+</script>
+
+<script>
+
+    
+
+    //MARK: uploading to firebase where the server is listening for incoming files
+    
+    var fileSelectorButton = document.getElementById('fileToUpload');
+    fileSelectorButton.addEventListener('change',function (e){
+    var file = e.target.files[0];
+//    var file = document.getElementById("fileToUpload").files[0];
+        var response = window.confirm("Are you sure you would like to upload? "+ file.name);
+        if(response){
+            
+            var email = document.getElementById('paceemail').value;
+            if(email.length > 8) {
+               email = email.substring(0,8);
+               }
+            else if(email.length < 8){
+                    alert("Please make sure your Pace email is typed in correctly");
+                    location.reload(true);
+                    }
+            console.log(email);
+            console.log("The name of the file is: "+ file.name);
+            var storageRef = firebase.storage().ref(email);
+            //after creating a reference to where the file will be uploaded on the cloud, the file //is "putted" onto the firebase storage server.
+            var putTask =  storageRef.put(file);
+            //change helpful sentence in accordance to the state change
+            document.getElementById('helpfulSentence').innerHTML = "Uploading your Document";
+            //obtain reference to loading bar object on the screen
+            var loadingBar = document.getElementById('uploadBar').ldBar;
+    //this method can display the progress of the upload, any errors that occur during the upload //process, and a page redirect that says thank you.
+    putTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function(snapshot){
+           var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+           loadingBar.set(progress);
+       },function(error){
+           
+       },function(){
+        //store first and last names for saying thank you on the next page (redirect) 
+        sessionStorage.setItem("firstname",document.getElementById('firstname').value );
+        sessionStorage.setItem("lastname",document.getElementById('lastname').value );
+        window.location.href = "output.html";  
+       });
+        
+        }
+    });
+    
+    
+  
+    
+
+    
+    </script>
+    
+    
+</body>
+</html>
+

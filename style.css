@@ -1,0 +1,8 @@
+.contents, body{
+    background-color: steelblue; color: black; text-align: center;
+    font-family: sans-serif;
+}
+.img {
+    height: 18%;
+    width: 18%;
+}
